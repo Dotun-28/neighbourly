@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
 const CATEGORIES = [
   { id: 'fire', label: 'Fire' },
@@ -10,25 +10,35 @@ const CATEGORIES = [
 
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [description, setDescription] = useState('');
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>What's happening?</Text>
 
       {CATEGORIES.map((cat) => {
-  const isSelected = selectedCategory === cat.id;
-  return (
-    <TouchableOpacity
-      key={cat.id}
-      style={[styles.categoryButton, isSelected && styles.categoryButtonSelected]}
-      onPress={() => setSelectedCategory(cat.id)}
-    >
-      <Text style={[styles.categoryText, isSelected && styles.categoryTextSelected]}>
-        {cat.label}
-      </Text>
-    </TouchableOpacity>
-  );
-})}
+        const isSelected = selectedCategory === cat.id;
+        return (
+          <TouchableOpacity
+            key={cat.id}
+            style={[styles.categoryButton, isSelected && styles.categoryButtonSelected]}
+            onPress={() => setSelectedCategory(cat.id)}
+          >
+            <Text style={[styles.categoryText, isSelected && styles.categoryTextSelected]}>
+              {cat.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+
+      <TextInput
+        style={styles.descriptionInput}
+        placeholder="What did you see? Be specific - location details help."
+        placeholderTextColor="#4B5750"
+        multiline
+        value={description}
+        onChangeText={setDescription}
+      />
 
       <Text style={styles.selectedLabel}>
         Selected: {selectedCategory ? selectedCategory : 'none yet'}
@@ -58,22 +68,34 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#DBDFD6',
   },
+  categoryButtonSelected: {
+    backgroundColor: '#E4EDE9',
+    borderColor: '#1F4E4A',
+    borderWidth: 2,
+  },
   categoryText: {
     fontSize: 16,
     fontWeight: '500',
     color: '#16211E',
-  },categoryButtonSelected: {
-  backgroundColor: '#E4EDE9',
-  borderColor: '#1F4E4A',
-  borderWidth: 2,
-},
-categoryTextSelected: {
-  color: '#123330',
-  fontWeight: '700',
-},
+  },
+  categoryTextSelected: {
+    color: '#123330',
+    fontWeight: '700',
+  },
+  descriptionInput: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DBDFD6',
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 15,
+    color: '#16211E',
+    minHeight: 90,
+    marginTop: 16,
+    textAlignVertical: 'top',
+  },
   selectedLabel: {
     marginTop: 20,
-    fontSize: 14,
-    color: '#4B5750',
+    fontSize: 14,color: '#4B5750',
   },
 });
