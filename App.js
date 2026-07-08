@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
 
 const CATEGORIES = [
   { id: 'fire', label: 'Fire' },
@@ -11,6 +11,21 @@ const CATEGORIES = [
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState('');
+
+  const isFormValid = selectedCategory !== null && description.trim().length > 0;
+
+  const handleSubmit = () => {
+    Alert.alert(
+      'Report submitted',
+      `Category: ${selectedCategory}\nDescription: ${description}`,
+      [{ text: 'OK', onPress: resetForm }]
+    );
+  };
+
+  const resetForm = () => {
+    setSelectedCategory(null);
+    setDescription('');
+  };
 
   return (
     <View style={styles.container}>
@@ -40,9 +55,13 @@ export default function App() {
         onChangeText={setDescription}
       />
 
-      <Text style={styles.selectedLabel}>
-        Selected: {selectedCategory ? selectedCategory : 'none yet'}
-      </Text>
+      <TouchableOpacity
+        style={[styles.submitButton, !isFormValid && styles.submitButtonDisabled]}
+        onPress={handleSubmit}
+        disabled={!isFormValid}
+      >
+        <Text style={styles.submitButtonText}>Alert Neighbors</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -94,8 +113,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlignVertical: 'top',
   },
-  selectedLabel: {
+  submitButton: {
+    backgroundColor: '#1F4E4A',
+    padding: 16,
+    borderRadius: 12,
     marginTop: 20,
-    fontSize: 14,color: '#4B5750',
+    alignItems: 'center',
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#DBDFD6',
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
