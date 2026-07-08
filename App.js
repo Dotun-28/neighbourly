@@ -15,15 +15,20 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.heading}>What's happening?</Text>
 
-      {CATEGORIES.map((cat) => (
-        <TouchableOpacity
-          key={cat.id}
-          style={styles.categoryButton}
-          onPress={() => setSelectedCategory(cat.id)}
-        >
-          <Text style={styles.categoryText}>{cat.label}</Text>
-        </TouchableOpacity>
-      ))}
+      {CATEGORIES.map((cat) => {
+  const isSelected = selectedCategory === cat.id;
+  return (
+    <TouchableOpacity
+      key={cat.id}
+      style={[styles.categoryButton, isSelected && styles.categoryButtonSelected]}
+      onPress={() => setSelectedCategory(cat.id)}
+    >
+      <Text style={[styles.categoryText, isSelected && styles.categoryTextSelected]}>
+        {cat.label}
+      </Text>
+    </TouchableOpacity>
+  );
+})}
 
       <Text style={styles.selectedLabel}>
         Selected: {selectedCategory ? selectedCategory : 'none yet'}
@@ -57,7 +62,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#16211E',
-  },
+  },categoryButtonSelected: {
+  backgroundColor: '#E4EDE9',
+  borderColor: '#1F4E4A',
+  borderWidth: 2,
+},
+categoryTextSelected: {
+  color: '#123330',
+  fontWeight: '700',
+},
   selectedLabel: {
     marginTop: 20,
     fontSize: 14,
