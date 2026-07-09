@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Keyboard, Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
-
+import * as Location from 'expo-location';
 const CATEGORIES = [
   { id: 'fire', label: 'Fire' },
   { id: 'burglary', label: 'Burglary' },
@@ -16,6 +16,8 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState(3);
+const [location, setLocation] = useState(null);
+const [locationStatus, setLocationStatus] = useState('Location not yet captured');
 
   const isFormValid = selectedCategory !== null && description.trim().length > 0;
 
@@ -32,6 +34,25 @@ export default function App() {
     setDescription('');
     setSeverity(3);
   };
+const getLocation = async () => {
+  setLocationStatus('Requesting permission...');
+
+  const { status } = await Location.requestForegroundPermissionsAsync();
+
+  if (status !== 'granted') {
+    setLocationStatus('Permission denied — location required to submit a report');
+    return;
+  }
+
+  setLocationStatus('Getting your location...');
+
+  const result = await Location.getCurrentPositionAsync({});
+  setLocation({
+    latitude: result.coords.latitude,
+    longitude: result.coords.longitude,
+  });
+  setLocationStatus('Location captured ✓');
+};
 
   return (
   <Pressable style={styles.container} onPress={Keyboard.dismiss}>
@@ -79,6 +100,12 @@ export default function App() {
             </Text>
           </View>
         </View>
+<TouchableOpacity style={styles.locationButton} onPress={getLocation}>
+  <Text style={styles.locationButtonText}>
+    {location ? 'Update location' : 'Share my location'}
+  </Text>
+</TouchableOpacity>
+<Text style={styles.locationStatusText}>{locationStatus}</Text>
 
         <TouchableOpacity
           style={[styles.submitButton, !isFormValid && styles.submitButtonDisabled]}
@@ -175,4 +202,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  locationButton: {
+  backgroundColor: '#E4EDE9',
+  borderWidth: 1,
+  borderColor: '#1F4E4A',
+  padding: 12,
+  borderRadius: 10,
+  alignItems: 'center',
+  marginTop: 16,
+},
+locationButtonText: {
+  color: '#123330',
+  fontWeight: '600',
+  fontSize: 14,
+},
+locationStatusText: {
+  fontSize: 12,
+  color: '#4B5750',
+  marginTop: 6,
+  textAlign: 'center',
+},
 });
