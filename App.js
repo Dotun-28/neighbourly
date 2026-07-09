@@ -19,21 +19,23 @@ export default function App() {
 const [location, setLocation] = useState(null);
 const [locationStatus, setLocationStatus] = useState('Location not yet captured');
 
-  const isFormValid = selectedCategory !== null && description.trim().length > 0;
+  const isFormValid = selectedCategory !== null && description.trim().length > 0 && location !== null;
 
   const handleSubmit = () => {
-    Alert.alert(
-      'Report submitted',
-      `Category: ${selectedCategory}\nSeverity: ${severity} - ${SEVERITY_LABELS[severity]}\nDescription: ${description}`,
-      [{ text: 'OK', onPress: resetForm }]
-    );
-  };
+  Alert.alert(
+    'Report submitted',
+    `Category: ${selectedCategory}\nSeverity: ${severity} - ${SEVERITY_LABELS[severity]}\nDescription: ${description}\nLocation: ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`,
+    [{ text: 'OK', onPress: resetForm }]
+  );
+};
 
   const resetForm = () => {
-    setSelectedCategory(null);
-    setDescription('');
-    setSeverity(3);
-  };
+  setSelectedCategory(null);
+  setDescription('');
+  setSeverity(3);
+  setLocation(null);
+  setLocationStatus('Location not yet captured');
+};
 const getLocation = async () => {
   setLocationStatus('Requesting permission...');
 
@@ -112,7 +114,9 @@ const getLocation = async () => {
           onPress={handleSubmit}
           disabled={!isFormValid}
         >
-          <Text style={styles.submitButtonText}>Alert Neighbors</Text>
+          <Text style={styles.locationStatusText}>
+  {locationStatus}{!location ? ' (required to submit)' : ''}
+</Text>
         </TouchableOpacity>
       
       </Pressable>
